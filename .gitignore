@@ -1,7 +1,9 @@
 ﻿.vs/
 *.user
 Source/build/
-x64/
 *.pdb
 *.obj
 *.exe
+
+Source/3rdParty/DirectXTex/Bin/
+*.aps
