@@ -8,8 +8,14 @@ public:
 	bool init() override;
 	bool cleanUp() override;
 
+	const ComPtr<ID3D12Device5>& getDevice() const { return device; }
+
 private:
 	bool enableDebugLayer();
+	bool createFactory();
+	bool createDevice();
 
+	ComPtr<IDXGIFactory6> factory;
+	ComPtr<IDXGIAdapter4> adapter;
+	ComPtr<ID3D12Device5> device;
 };
-

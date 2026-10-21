@@ -76,6 +76,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     delete app;
 
+    //Check Memory leaks
+    ComPtr<IDXGIDebug> dxgiControler;
+    if (SUCCEEDED(DXGIGetDebugInterface1(0, IID_PPV_ARGS(&dxgiControler))))
+    {
+        dxgiControler->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_ALL);
+    }
 
     return (int) msg.wParam;
 }
