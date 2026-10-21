@@ -52,22 +52,46 @@ bool ModuleD3D12::createDevice()
 	return true;
 }
 
+bool ModuleD3D12::setUpInfoQueue()
+{
+#ifdef _DEBUG
+	ComPtr<ID3D12InfoQueue> infoQueue;
+	if (FAILED(device.As(&infoQueue)))
+	{
+		LOG("Failed to get D3D12 info queue\n");
+		return false;
+	}
+	for (const D3D12_MESSAGE_SEVERITY severity : 
+		{D3D12_MESSAGE_SEVERITY_CORRUPTION,
+		D3D12_MESSAGE_SEVERITY_ERROR,
+		D3D12_MESSAGE_SEVERITY_WARNING})
+	{	
+		if (FAILED(infoQueue->SetBreakOnSeverity(severity, TRUE)))
+		{
+
+			LOG("Failed to set break on severity %d\n", static_cast<int>(severity));
+			return false;
+		}	
+	}
+
+#endif
+	return true;
+}
+
 bool ModuleD3D12::init()
 {
 	if (!enableDebugLayer())
-	{
 		return false;
-	}
 
 	if (!createFactory())
-	{
 		return false;
-	}
 
 	if (!createDevice())
-	{
 		return false;
-	}
+
+	if (!setUpInfoQueue())
+		return false;
+
 
 	return true;
 }

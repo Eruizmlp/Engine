@@ -14,8 +14,11 @@ private:
 	bool enableDebugLayer();
 	bool createFactory();
 	bool createDevice();
+	bool setUpInfoQueue();
 
 	ComPtr<IDXGIFactory6> factory;
 	ComPtr<IDXGIAdapter4> adapter;
 	ComPtr<ID3D12Device5> device;
+	ComPtr<ID3D12InfoQueue> infoQueue;
+
 };
