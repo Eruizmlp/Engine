@@ -77,6 +77,23 @@ bool ModuleD3D12::setUpInfoQueue()
 #endif
 	return true;
 }
+bool ModuleD3D12::createCommandQueue()
+{
+
+	D3D12_COMMAND_QUEUE_DESC queueDesc = {};
+	queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
+	queueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
+
+	if(FAILED(device->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(&commandQueue))))
+	{
+		LOG("Failed to create D3D12 command queue\n\n");
+		return false;
+	}
+	
+	LOG("Successfully created D3D12 command queue\n\n");
+
+	return true;
+}
 
 bool ModuleD3D12::init()
 {
@@ -92,6 +109,8 @@ bool ModuleD3D12::init()
 	if (!setUpInfoQueue())
 		return false;
 
+	if (!createCommandQueue())
+		return false;
 
 	return true;
 }
