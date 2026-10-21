@@ -1,6 +1,11 @@
 #include "Globals.h"
 #include "ModuleD3D12.h"
 
+ModuleD3D12::ModuleD3D12(HWND hWnd) : hWnd(hWnd)
+{
+	
+}
+
 bool ModuleD3D12::enableDebugLayer()
 {
 #ifdef _DEBUG
@@ -91,6 +96,11 @@ bool ModuleD3D12::createCommandQueue()
 	}
 	
 	LOG("Successfully created D3D12 command queue\n\n");
+
+	return true;
+}
+bool ModuleD3D12::createSwapChain()
+{	
 
 	return true;
 }
