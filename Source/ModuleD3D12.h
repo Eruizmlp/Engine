@@ -19,15 +19,18 @@ private:
 	bool createFactory();
 	bool createDevice();
 	bool setUpInfoQueue();
+	DXGI_SWAP_CHAIN_DESC1 setUpSwapChainDesc() const;
 	bool createCommandQueue();
 	bool createSwapChain();
 
 	HWND hWnd = nullptr;
+	static constexpr int SWAP_CHAIN_BUFFER_COUNT = 2;
 
 
 	ComPtr<IDXGIFactory6> factory;
 	ComPtr<IDXGIAdapter4> adapter;
 	ComPtr<ID3D12Device5> device;
 	ComPtr<ID3D12CommandQueue> commandQueue;
+	ComPtr<IDXGISwapChain4> swapChain;
 
 };

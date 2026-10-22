@@ -99,8 +99,49 @@ bool ModuleD3D12::createCommandQueue()
 
 	return true;
 }
+
+DXGI_SWAP_CHAIN_DESC1 ModuleD3D12::setUpSwapChainDesc() const
+{
+	DXGI_SWAP_CHAIN_DESC1 swapChainDesc = {};
+	swapChainDesc.Width = 0; // Width of the back buffer in pixels
+	swapChainDesc.Height = 0; // Height of the back buffer in pixels
+	swapChainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM; // 32-bit RGBA format (8 bits per channel)
+	// UNORM = Unsigned normalized integer (0-255 mapped to 0.0-1.0)
+	swapChainDesc.Stereo = FALSE; // Set to TRUE for stereoscopic 3D rendering (VR/3D Vision)
+	swapChainDesc.SampleDesc = { 1, 0 }; // Multisampling { Count, Quality } // Count=1: No multisampling (1 sample per pixel)
+	swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT; // This buffer will be used as a render target
+	swapChainDesc.BufferCount = 2; // Double buffering:
+	// - 1 front buffer (displayed)
+	// - 1 back buffer (rendering)
+	swapChainDesc.Scaling = DXGI_SCALING_STRETCH; // How to scale when window size doesn't match buffer size:
+	// STRETCH = Stretch the image to fit the window
+	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD; // Modern efficient swap method:
+	// - FLIP: Uses page flipping (no copying)
+	// - DISCARD: Discard previous back buffer contents
+	swapChainDesc.AlphaMode = DXGI_ALPHA_MODE_UNSPECIFIED; // Alpha channel behavior for window blending UNSPECIFIED = Use default behavior
+	swapChainDesc.Flags = 0;
+
+	return swapChainDesc;
+}
+
 bool ModuleD3D12::createSwapChain()
 {	
+	DXGI_SWAP_CHAIN_DESC1 swapChainDesc1 = setUpSwapChainDesc();
+
+	ComPtr<IDXGISwapChain1> swapChain1;
+
+	if (FAILED(factory->CreateSwapChainForHwnd(commandQueue.Get(), hWnd, &swapChainDesc1, nullptr, nullptr, &swapChain1)))
+	{
+		LOG("Failed to create D3D12 SwapChain \n\n");
+		return false;
+
+	}
+
+	if (FAILED(swapChain1.As(&swapChain)))
+	{
+		LOG("Failed to get IDXGISwapChain3 interface from swap chain\n");
+		return false;
+	}
 
 	return true;
 }
@@ -120,6 +161,9 @@ bool ModuleD3D12::init()
 		return false;
 
 	if (!createCommandQueue())
+		return false;
+
+	if (!createSwapChain())
 		return false;
 
 	return true;
